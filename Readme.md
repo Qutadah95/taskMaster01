@@ -23,3 +23,9 @@ day two :
 
 ## setting page
 ![Home](img/suttingButton.PNG)
+
+day three :
+
+* add task for the home page
+
+![Home](img/Capture.PNG)
