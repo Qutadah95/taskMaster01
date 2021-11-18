@@ -13,9 +13,12 @@ import java.util.List;
 import java.util.concurrent.RecursiveTask;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+
+
     List<Task> allTask = new ArrayList<Task>();
 
-    public TaskAdapter(List<Task> allTask) {
+
+    public TaskAdapter(List<Task> allTask, MainActivity mainActivity) {
         this.allTask = allTask;
     }
     public static class TaskViewHolder extends RecyclerView.ViewHolder{

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity   {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +26,23 @@ public class MainActivity extends AppCompatActivity {
         Button allTaskButton = findViewById(R.id.allTask);
         Button addTaskButton = findViewById(R.id.addTask);
 
-        List<Task> allTask = new ArrayList<Task>();
-        allTask.add(new Task("Task1","TaskBody","complete"));
-        allTask.add(new Task("Task2","TaskBody","in progress"));
-        allTask.add(new Task("Task3","TaskBody","in progress"));
-        allTask.add(new Task("Task4","TaskBody","assigned"));
-        allTask.add(new Task("Task5","TaskBody","assigned"));
-        allTask.add(new Task("Task6","TaskBody","new"));
-        allTask.add(new Task("Task7","TaskBody","new"));
+//        List<Task> allTask = new ArrayList<Task>();
+//        allTask.add(new Task("Task1","TaskBody","complete"));
+//        allTask.add(new Task("Task2","TaskBody","in progress"));
+//        allTask.add(new Task("Task3","TaskBody","in progress"));
+//        allTask.add(new Task("Task4","TaskBody","assigned"));
+//        allTask.add(new Task("Task5","TaskBody","assigned"));
+//        allTask.add(new Task("Task6","TaskBody","new"));
+//        allTask.add(new Task("Task7","TaskBody","new"));
+        AppDatabase appDb = AppDatabase.getInstance(getApplicationContext());
+        TaskDAO taskDao = appDb.taskDao();
+        List<Task> tasks = taskDao.getAll();
 
-
+        System.out.println("tasks:::::::::::: "+tasks.size());
         RecyclerView recyclerView = findViewById(R.id.dddd);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        recyclerView.setAdapter(new TaskAdapter(allTask));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new TaskAdapter(tasks,this));
+
 
 
         allTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -112,4 +116,5 @@ addTaskButton.setOnClickListener(new View.OnClickListener() {
         TextView textView=findViewById(R.id.textView);
         textView.setText(userName);
     }
+
 }

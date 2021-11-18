@@ -29,3 +29,17 @@ day three :
 * add task for the home page
 
 ![Home](img/Capture.PNG)
+
+day four :
+
+* create a task on add task activity  :
+
+
+![Home](img/test1.PNG)
+
+* show the task on the home activity :
+
+![Home](img/test2.PNG)
+
+
+
