@@ -12,10 +12,15 @@ public class TaskDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
-
-        TextView editTitle = findViewById(R.id.title);
-        String editedText = getIntent().getExtras().get("task detail").toString();
-        editTitle.setText(editedText);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        TextView title = findViewById(R.id.changableTitle);
+        TextView body = findViewById(R.id.bodyText);
+        TextView state = findViewById(R.id.stateText);
+        String strTitle = getIntent().getExtras().get("title").toString();
+        String strbody = getIntent().getExtras().get("body").toString();
+        String strState = getIntent().getExtras().get("state").toString();
+        title.setText(strTitle);
+        body.setText(strbody);
+        state.setText(strState);
     }
 }
