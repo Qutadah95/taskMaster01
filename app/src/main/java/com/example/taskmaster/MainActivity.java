@@ -1,5 +1,6 @@
 package com.example.taskmaster;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,11 +8,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,26 +32,42 @@ public class MainActivity extends AppCompatActivity   {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            // Add these lines to add the AWSApiPlugin plugins
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
 
+            Log.i("TaskMaster", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("TaskMaster", "Could not initialize Amplify", error);
+        }
+
+        RecyclerView recyclerView = findViewById(R.id.allTask);
+
+        Handler handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
+
+            @Override
+            public boolean handleMessage(@NonNull Message message) {
+                recyclerView.getAdapter().notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new TaskAdapter(AddTask));
+        List<Task> allTask = new ArrayList<Task>();
+        Amplify.API.query(
+                ModelQuery.list(com.amplifyframework.datastore.generated.model.Task.class),
+                response -> {
+                    for (Task task : response.getData()) {
+                        allTask.add(task);
+                    }
+                    handler.sendEmptyMessage(1);
+                },
+                error -> Log.e("TaskMaster", error.toString(), error)
+        );
         Button allTaskButton = findViewById(R.id.allTask);
         Button addTaskButton = findViewById(R.id.addTask);
-
-//        List<Task> allTask = new ArrayList<Task>();
-//        allTask.add(new Task("Task1","TaskBody","complete"));
-//        allTask.add(new Task("Task2","TaskBody","in progress"));
-//        allTask.add(new Task("Task3","TaskBody","in progress"));
-//        allTask.add(new Task("Task4","TaskBody","assigned"));
-//        allTask.add(new Task("Task5","TaskBody","assigned"));
-//        allTask.add(new Task("Task6","TaskBody","new"));
-//        allTask.add(new Task("Task7","TaskBody","new"));
-        AppDatabase appDb = AppDatabase.getInstance(getApplicationContext());
-        TaskDAO taskDao = appDb.taskDao();
-        List<Task> tasks = taskDao.getAll();
-
-        System.out.println("tasks:::::::::::: "+tasks.size());
-        RecyclerView recyclerView = findViewById(R.id.dddd);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter(tasks,this));
 
 
 
@@ -60,41 +86,9 @@ addTaskButton.setOnClickListener(new View.OnClickListener() {
     }
 });
 
-//        Button Button1 = (Button) findViewById(R.id.Button1);
-//        Button Button2=(Button) findViewById(R.id.Button2);
-//        Button Button3 =(Button) findViewById(R.id.Button3);
+
         Button settingButton=(Button) findViewById(R.id.settingButton);
-//        Button1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String button1 = Button1.getText().toString();
-//                Intent goToDetailPage = new Intent(MainActivity.this,TaskDetail.class);
-//                goToDetailPage.putExtra("task detail",button1);
-//                startActivity(goToDetailPage);
-//
-//            }
-//
-//        });
-//        Button2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String button2 = Button2.getText().toString();
-//                Intent goToDetailPage = new Intent(MainActivity.this,TaskDetail.class);
-//                goToDetailPage.putExtra("task detail",button2);
-//                startActivity(goToDetailPage);
-//
-//            }
-//        });
-//        Button3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String button3 = Button3.getText().toString();
-//                Intent goToDetailPage = new Intent(MainActivity.this,TaskDetail.class);
-//                goToDetailPage.putExtra("task detail",button3);
-//                startActivity(goToDetailPage);
-//
-//            }
-//        });
+
 
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
