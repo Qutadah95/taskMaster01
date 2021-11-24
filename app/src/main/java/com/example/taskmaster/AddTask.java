@@ -4,10 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+
+import kotlinx.coroutines.scheduling.TaskImpl;
 
 public class AddTask extends AppCompatActivity {
 
@@ -36,9 +42,15 @@ public class AddTask extends AppCompatActivity {
                 EditText state = findViewById(R.id.editState);
                 String getState = state.getText().toString();
                 Toast.makeText(getApplicationContext(),  "submitted!", Toast.LENGTH_SHORT).show();
-                Task task = new Task(getTitle,getBody,getState);
-                AppDatabase appDb = AppDatabase.getInstance(getApplicationContext());
-                appDb.taskDao().insertAll(task);
+//                Task task = new Task(getTitle,getBody,getState);
+//                AppDatabase appDb = AppDatabase.getInstance(getApplicationContext());
+//                appDb.taskDao().insertAll(task);
+               Task t=Task.builder().title(getTitle).body(getBody).state(getState).build();
+
+               Amplify.API.mutate(
+                       ModelMutation.create(t),
+                       response -> Log.i("TaskMaster", "Added Task with id: " + response.getData().getId()),
+                       error -> Log.e("TaskMaster", "Create failed", error));
             }
         });
     }
