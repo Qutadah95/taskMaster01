@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 
-import kotlinx.coroutines.scheduling.TaskImpl;
 
 public class AddTask extends AppCompatActivity {
 
@@ -45,11 +45,11 @@ public class AddTask extends AppCompatActivity {
 //                Task task = new Task(getTitle,getBody,getState);
 //                AppDatabase appDb = AppDatabase.getInstance(getApplicationContext());
 //                appDb.taskDao().insertAll(task);
-               Task t=Task.builder().title(getTitle).body(getBody).state(getState).build();
+               Task t= Task.builder().title(getTitle).body(getBody).state(getState).build();
 
-               Amplify.API.mutate(
-                       ModelMutation.create(t),
-                       response -> Log.i("TaskMaster", "Added Task with id: " + response.getData().getId()),
+               Amplify.DataStore.save(
+                       t,
+                       response -> Log.i("TaskMaster", "Added Task with id: " + t.getId()),
                        error -> Log.e("TaskMaster", "Create failed", error));
             }
         });

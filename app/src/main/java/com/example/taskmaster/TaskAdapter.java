@@ -8,19 +8,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.datastore.generated.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
 
-    List<Task> allTask = new ArrayList<Task>();
+    List<Task> allTask = new ArrayList<com.amplifyframework.datastore.generated.model.Task>();
 
 
     public TaskAdapter(List<Task> allTask, MainActivity mainActivity) {
+       this.allTask = allTask;
+    }
+
+    public TaskAdapter(List<Task> allTask) {
         this.allTask = allTask;
     }
+
     public static class TaskViewHolder extends RecyclerView.ViewHolder{
 
         public Task task;
@@ -48,9 +54,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView body = holder.itemView.findViewById(R.id.body);
         TextView state = holder.itemView.findViewById(R.id.state);
 
-        name.setText(holder.task.name);
-        body.setText(holder.task.body);
-        state.setText(holder.task.state);
+        name.setText(holder.task.getTitle());
+        body.setText(holder.task.getBody());
+        state.setText(holder.task.getState());
 
 
     }
