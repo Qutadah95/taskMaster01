@@ -1,6 +1,13 @@
-type Task @model {
+type Task @model @auth(rules: [{allow: public}]) @key(name: "byTeam", fields: ["teamID"]) {
   id: ID!
   title: String
   body: String
   state: String
+  teamID: ID
+}
+
+type Team @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  tasks: [Task] @connection(keyName: "byTeam", fields: ["id"])
 }
