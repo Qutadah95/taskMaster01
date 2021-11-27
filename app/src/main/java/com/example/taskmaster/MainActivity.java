@@ -22,6 +22,8 @@ import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +35,21 @@ public class MainActivity extends AppCompatActivity   {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            // Add these lines to add the AWSApiPlugin plugins
             Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.configure(getApplicationContext());
-
-            Log.i("TaskMaster", "Initialized Amplify");
-        } catch (AmplifyException error) {
-            Log.e("TaskMaster", "Could not initialize Amplify", error);
+            Log.i("Tutorial", "Initialized Amplify");
+        } catch (AmplifyException failure) {
+            Log.e("Tutorial", "Could not initialize Amplify", failure);
         }
+        Amplify.DataStore.observe(Task.class,
+                started -> Log.i("Tutorial", "Observation began."),
+                change -> Log.i("Tutorial", change.item().toString()),
+                failure -> Log.e("Tutorial", "Observation failed.", failure),
+                () -> Log.i("Tutorial", "Observation complete.")
+        );
 
-        RecyclerView recyclerView = findViewById(R.id.allTask);
+        RecyclerView recyclerView = findViewById(R.id.dddd);
 
         Handler handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
 
@@ -53,18 +60,18 @@ public class MainActivity extends AppCompatActivity   {
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter(AddTask));
-        List<Task> allTask = new ArrayList<Task>();
-        Amplify.API.query(
-                ModelQuery.list(com.amplifyframework.datastore.generated.model.Task.class),
-                response -> {
-                    for (Task task : response.getData()) {
-                        allTask.add(task);
+        List allTask = new ArrayList();
+        Amplify.DataStore.query(
+                Task.class,
+                items -> {
+                    while (items.hasNext()) {
+                        Task item = items.next();
+                        allTask.add(item);
+                        Log.i("Amplify", "Id " + item.getId());
                     }
-                    handler.sendEmptyMessage(1);
+
                 },
-                error -> Log.e("TaskMaster", error.toString(), error)
+                failure -> Log.e("Amplify", "Could not query DataStore", failure)
         );
         Button allTaskButton = findViewById(R.id.allTask);
         Button addTaskButton = findViewById(R.id.addTask);
@@ -99,7 +106,8 @@ addTaskButton.setOnClickListener(new View.OnClickListener() {
             }
 
         });
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new TaskAdapter(allTask));
     }
     @Override
     protected void onResume() {
