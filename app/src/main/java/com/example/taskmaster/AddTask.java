@@ -88,7 +88,7 @@ public class AddTask extends AppCompatActivity {
                                         success -> Log.i("COMO", "Saved item: "),
                                         error -> Log.e("Amplify", "Could not save item to DataStore", error)
                                 );
-                                Log.i("EMAM", "Id was stored " );
+                                Log.i("Qutadah", "Id was stored " );
                                 Log.i("Amplify", "Id " + item.getId());
                             }
                         },
