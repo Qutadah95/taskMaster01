@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity   {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.configure(getApplicationContext());
@@ -59,6 +61,15 @@ public class MainActivity extends AppCompatActivity   {
                 change -> Log.i("Tutorial", change.item().toString()),
                 failure -> Log.e("Tutorial", "Observation failed.", failure),
                 () -> Log.i("Tutorial", "Observation complete.")
+        );
+//        Amplify.Auth.signOut(
+//                () -> Log.i("AuthQuickstart", "Signed out successfully"),
+//                error -> Log.e("AuthQuickstart", error.toString())
+//        );
+        Amplify.Auth.signInWithWebUI(
+                this,
+                result -> Log.i("AuthQuickStart", result.toString()),
+                error -> Log.e("AuthQuickStart", error.toString())
         );
 
 //        RecyclerView recyclerView = findViewById(R.id.dddd);
@@ -126,7 +137,10 @@ addTaskButton.setOnClickListener(new View.OnClickListener() {
         recyclerView.setLayoutManager(linearLayoutManager);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setAdapter(new TaskAdapter(allTask));
-
+        Amplify.Auth.fetchAuthSession(
+                result -> Log.i("AmplifyQuickstart", result.toString()),
+                error -> Log.e("AmplifyQuickstart", error.toString())
+        );
     }
     @Override
     protected void onResume() {
