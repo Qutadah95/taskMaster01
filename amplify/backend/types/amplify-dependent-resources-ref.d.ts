@@ -1,10 +1,4 @@
 export type AmplifyDependentResourcesAttributes = {
-    "api": {
-        "taskmaster": {
-            "GraphQLAPIIdOutput": "string",
-            "GraphQLAPIEndpointOutput": "string"
-        }
-    },
     "auth": {
         "taskmasteredfff70c": {
             "IdentityPoolId": "string",

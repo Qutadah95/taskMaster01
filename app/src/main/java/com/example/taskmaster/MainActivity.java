@@ -93,6 +93,11 @@ public class MainActivity extends AppCompatActivity   {
 //                },
 //                failure -> Log.e("Amplify", "Could not query DataStore", failure)
 //        );
+        Amplify.Auth.signInWithWebUI(
+                MainActivity.this,
+                result -> Log.i("AuthQuickStart", result.toString()),
+                error -> Log.e("AuthQuickStart", error.toString())
+        );
         Button allTaskButton = findViewById(R.id.allTask);
         Button addTaskButton = findViewById(R.id.addTask);
         Button logOutButton = findViewById(R.id.logout);

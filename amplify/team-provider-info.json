@@ -16,5 +16,23 @@
         "taskmasteredfff70c": {}
       }
     }
+  },
+  "newdev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-taskmaster-newdev-123234-authRole",
+      "UnauthRoleArn": "arn:aws:iam::957935758509:role/amplify-taskmaster-newdev-123234-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::957935758509:role/amplify-taskmaster-newdev-123234-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-taskmaster-newdev-123234-deployment",
+      "UnauthRoleName": "amplify-taskmaster-newdev-123234-unauthRole",
+      "StackName": "amplify-taskmaster-newdev-123234",
+      "StackId": "arn:aws:cloudformation:us-east-1:957935758509:stack/amplify-taskmaster-newdev-123234/ac56e060-50ff-11ec-b96f-12d2028a0f59",
+      "AmplifyAppId": "d17qw17s7uggyl"
+    },
+    "categories": {
+      "auth": {
+        "taskmasteredfff70c": {}
+      }
+    }
   }
 }
