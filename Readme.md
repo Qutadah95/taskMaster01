@@ -41,5 +41,41 @@ day four :
 
 ![Home](img/test2.PNG)
 
+## lab 32 
+
+we can add task from add task activity 
+
+![Home](img/addTask.PNG)
+
+we can show task from main  activity 
+
+![Home](img/mainTask.PNG)
+
+## lab 33 
+
+we can add task  & select a team from add task activity 
+
+![Home](img/addTask.PNG)
 
 
+we can filter by the team from sitting activity
+
+![Home](img/sitting.PNG)
+
+
+we can show task by team  from main  activity  
+
+![Home](img/mainTask.PNG)
+
+## lab 36
+
+log in activity
+
+
+![Home](img/login.PNG)
+
+
+log out button 
+
+
+![Home](img/logout.PNG)

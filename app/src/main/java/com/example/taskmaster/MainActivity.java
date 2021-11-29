@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity   {
 //                },
 //                failure -> Log.e("Amplify", "Could not query DataStore", failure)
 //        );
+
         Amplify.Auth.signInWithWebUI(
                 MainActivity.this,
                 result -> Log.i("AuthQuickStart", result.toString()),
