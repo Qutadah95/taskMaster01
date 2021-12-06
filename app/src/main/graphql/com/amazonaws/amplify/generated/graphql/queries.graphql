@@ -17,6 +17,7 @@ query SyncTasks(
       body
       state
       file
+      location
       teamID
       _version
       _deleted
@@ -35,6 +36,7 @@ query GetTask($id: ID!) {
     body
     state
     file
+    location
     teamID
     _version
     _deleted
@@ -55,6 +57,7 @@ query ListTasks(
       body
       state
       file
+      location
       teamID
       _version
       _deleted
@@ -106,6 +109,7 @@ query GetTeam($id: ID!) {
         body
         state
         file
+        location
         teamID
         _version
         _deleted

@@ -2,9 +2,13 @@ package com.example.taskmaster;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,6 +27,8 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +41,8 @@ import kotlin.Suppress;
 
 public class AddTask extends AppCompatActivity {
     String fileName="";
+    Location location;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,25 @@ public class AddTask extends AppCompatActivity {
         Button homeButton = findViewById(R.id.goBackBtn);
         Button addTaskButton = findViewById(R.id.homeAddTask);
         Button uploadButton = findViewById(R.id.upload);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        this.location = location;
+                        Toast.makeText(this, "Location was added", Toast.LENGTH_LONG).show();
+                    }
+                });
         try {
             // Add these lines to add the AWSApiPlugin plugins
             Amplify.addPlugin(new AWSApiPlugin());
@@ -64,30 +91,6 @@ public class AddTask extends AppCompatActivity {
 
         });
 
-//        Team item = Team.builder()
-//                .name("Team1")
-//                .build();
-//        Amplify.DataStore.save(
-//                item,
-//                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-//                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-//        );
-//        Team item2 = Team.builder()
-//                .name("Team2")
-//                .build();
-//        Amplify.DataStore.save(
-//                item2,
-//                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-//                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-//        );
-//        Team item3 = Team.builder()
-//                .name("Team3")
-//                .build();
-//        Amplify.DataStore.save(
-//                item3,
-//                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-//                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-//        );
         Spinner s = (Spinner) findViewById(R.id.spinner2);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.items, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -101,6 +104,8 @@ public class AddTask extends AppCompatActivity {
         });
 
         addTaskButton.setOnClickListener(new View.OnClickListener() {
+            private Location location;
+
             @Override
             public void onClick(View v) {
                 EditText title = findViewById(R.id.editName);
@@ -109,18 +114,13 @@ public class AddTask extends AppCompatActivity {
                 String getBody = body.getText().toString();
                 EditText state = findViewById(R.id.editState);
                 String getState = state.getText().toString();
-//               Task t= Task.builder().title(getTitle).body(getBody).state(getState).build();
-//               Amplify.DataStore.save(
-//                       t,
-//                       response -> Log.i("TaskMaster", "Added Task with id: " + t.getId()),
-//                       error -> Log.e("TaskMaster", "Create failed", error));
+//
                 String team =  s.getSelectedItem().toString();
 
 
                 Intent intent = getIntent();
-                Bundle bundle = intent.getExtras();
+//                Bundle bundle = intent.getExtras();
 //                Uri data = (Uri)bundle.get(Intent.EXTRA_STREAM);
-// Figure out what to do based on the intent type
                 if (intent.getType() != null) {
 //                    System.out.println(data);
                     System.out.println("fileName0");
@@ -130,7 +130,7 @@ public class AddTask extends AppCompatActivity {
                             items -> {
                                 while (items.hasNext()) {
                                     Team item = items.next();
-                                    Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).file(fileName).teamId(item.getId()).build();
+                                    Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).file(fileName).location(this.location.getLatitude()+","+this.location.getLongitude()).teamId(item.getId()).build();
                                     Amplify.DataStore.save(
                                             item1,
                                             success -> Log.i("COMO", "Saved item: "),
@@ -156,7 +156,6 @@ public class AddTask extends AppCompatActivity {
         intent.setType("*/*");
         intent=Intent.createChooser(intent,"get file");
         startActivityForResult(intent,1234);
-
 
 
 }

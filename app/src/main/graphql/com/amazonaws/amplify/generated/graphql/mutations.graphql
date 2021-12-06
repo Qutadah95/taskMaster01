@@ -9,6 +9,7 @@ mutation CreateTask(
     body
     state
     file
+    location
     teamID
     _version
     _deleted
@@ -27,6 +28,7 @@ mutation UpdateTask(
     body
     state
     file
+    location
     teamID
     _version
     _deleted
@@ -45,6 +47,7 @@ mutation DeleteTask(
     body
     state
     file
+    location
     teamID
     _version
     _deleted
@@ -67,6 +70,7 @@ mutation CreateTeam(
         body
         state
         file
+        location
         teamID
         _version
         _deleted
@@ -98,6 +102,7 @@ mutation UpdateTeam(
         body
         state
         file
+        location
         teamID
         _version
         _deleted
@@ -129,6 +134,7 @@ mutation DeleteTeam(
         body
         state
         file
+        location
         teamID
         _version
         _deleted
