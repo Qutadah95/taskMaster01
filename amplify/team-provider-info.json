@@ -31,7 +31,8 @@
     },
     "categories": {
       "auth": {
-        "taskmasteredfff70c": {}
+        "taskmasteredfff70c": {},
+        "true": {}
       }
     }
   }

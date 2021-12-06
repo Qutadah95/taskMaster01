@@ -3,6 +3,7 @@ type Task @model @auth(rules: [{allow: public}]) @key(name: "byTeam", fields: ["
   title: String
   body: String
   state: String
+  file:String
   teamID: ID
 }
 
