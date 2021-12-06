@@ -104,6 +104,15 @@ public class MainActivity extends AppCompatActivity   {
         Button addTaskButton = findViewById(R.id.addTask);
         Button logOutButton = findViewById(R.id.logout);
         Button logInButton = findViewById(R.id.login);
+        Button DetailButton = findViewById(R.id.Detail);
+        DetailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent showDetail = new Intent(MainActivity.this,TaskDetail.class);
+                startActivity(showDetail);
+
+            }
+        });
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

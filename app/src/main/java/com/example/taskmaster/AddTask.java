@@ -43,7 +43,7 @@ public class AddTask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                getFile();
+              getFile();
 
                 }
 
@@ -100,13 +100,14 @@ public class AddTask extends AppCompatActivity {
 //                       response -> Log.i("TaskMaster", "Added Task with id: " + t.getId()),
 //                       error -> Log.e("TaskMaster", "Create failed", error));
                 String team =  s.getSelectedItem().toString();
-
+                System.out.println("fileName0");
+                System.out.println(fileName);
                 Amplify.DataStore.query(
                         Team.class,Team.NAME.contains(team),
                         items -> {
                             while (items.hasNext()) {
                                 Team item = items.next();
-                                Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).teamId(item.getId()).build();
+                                Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).file(fileName).teamId(item.getId()).build();
                                 Amplify.DataStore.save(
                                         item1,
                                         success -> Log.i("COMO", "Saved item: "),
@@ -127,34 +128,34 @@ public class AddTask extends AppCompatActivity {
         });
     }
     public void getFile(){
-    Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
-    intent.setType("*/*");
-    intent=Intent.createChooser(intent,"get file");
-    startActivityForResult(intent,1234);
+        Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent=Intent.createChooser(intent,"get file");
+        startActivityForResult(intent,1234);
 
 
 
 }
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//
-//        try {
-//            assert data != null;
-//            InputStream exampleInputStream = getContentResolver().openInputStream(data.getData());
-//
-//            fileName = data.getData().getPath().toString();
-//
-//
-//            Amplify.Storage.uploadInputStream(
-//                    data.getData().getPath().toString(),
-//                    exampleInputStream,
-//                    result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-//                    storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
-//            );
-//        }  catch (FileNotFoundException error) {
-//            Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        try {
+            assert data != null;
+            InputStream exampleInputStream = getContentResolver().openInputStream(data.getData());
+
+            fileName = data.getData().getPath().toString();
+
+
+            Amplify.Storage.uploadInputStream(
+                    data.getData().getPath().toString(),
+                    exampleInputStream,
+                    result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                    storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+            );
+        }  catch (FileNotFoundException error) {
+            Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
+        }
+    }
 }
