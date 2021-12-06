@@ -16,9 +16,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +43,17 @@ public class AddTask extends AppCompatActivity {
         Button homeButton = findViewById(R.id.goBackBtn);
         Button addTaskButton = findViewById(R.id.homeAddTask);
         Button uploadButton = findViewById(R.id.upload);
+        try {
+            // Add these lines to add the AWSApiPlugin plugins
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,32 +115,41 @@ public class AddTask extends AppCompatActivity {
 //                       response -> Log.i("TaskMaster", "Added Task with id: " + t.getId()),
 //                       error -> Log.e("TaskMaster", "Create failed", error));
                 String team =  s.getSelectedItem().toString();
-                System.out.println("fileName0");
-                System.out.println(fileName);
-                Amplify.DataStore.query(
-                        Team.class,Team.NAME.contains(team),
-                        items -> {
-                            while (items.hasNext()) {
-                                Team item = items.next();
-                                Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).file(fileName).teamId(item.getId()).build();
-                                Amplify.DataStore.save(
-                                        item1,
-                                        success -> Log.i("COMO", "Saved item: "),
-                                        error -> Log.e("COMO", "Could not save item to DataStore", error)
-                                );
-                                Log.i("COMO", "Id was stored " );
-                                Log.i("COMO", "Id " + item.getId());
-                            }
-                        },
-                        failure -> Log.e("COMO", "Could not query DataStore", failure)
-                );
 
-                Toast.makeText(getApplicationContext(),  "submitted!", Toast.LENGTH_SHORT).show();
-                finish();
 
+                Intent intent = getIntent();
+                Bundle bundle = intent.getExtras();
+//                Uri data = (Uri)bundle.get(Intent.EXTRA_STREAM);
+// Figure out what to do based on the intent type
+                if (intent.getType() != null) {
+//                    System.out.println(data);
+                    System.out.println("fileName0");
+                    System.out.println(fileName);
+                    Amplify.DataStore.query(
+                            Team.class,Team.NAME.contains(team),
+                            items -> {
+                                while (items.hasNext()) {
+                                    Team item = items.next();
+                                    Task item1 = Task.builder().title(getTitle).body(getBody).state(getState).file(fileName).teamId(item.getId()).build();
+                                    Amplify.DataStore.save(
+                                            item1,
+                                            success -> Log.i("COMO", "Saved item: "),
+                                            error -> Log.e("COMO", "Could not save item to DataStore", error)
+                                    );
+                                    Log.i("COMO", "Id was stored " );
+                                    Log.i("COMO", "Id " + item.getId());
+                                }
+                            },
+                            failure -> Log.e("COMO", "Could not query DataStore", failure)
+                    );
+
+                    Toast.makeText(getApplicationContext(),  "submitted!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
 
         });
+
     }
     public void getFile(){
         Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
